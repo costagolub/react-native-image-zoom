@@ -357,6 +357,18 @@ export default class ImageViewer extends React.Component<Props, State> {
                   this.horizontalWholeOuterCounter += 1 / 1e10;
                 }
                 this.animatedPositionX.setValue(this.positionX);
+
+                const verticalMax = (this.props.imageHeight * this.scale - this.props.cropHeight) / 2 / this.scale;
+
+                if (this.positionY < -verticalMax) {
+                  this.positionY = -verticalMax;
+                  this.verticalWholeCounter += -1 / 1e10;
+                } else if (this.positionY > verticalMax) {
+                  this.positionY = verticalMax;
+                  this.verticalWholeCounter += 1 / 1e10;
+                }
+
+                this.animatedPositionY.setValue(this.positionY);
               } else {
                 // 不能横向拖拽，全部算做溢出偏移量
                 this.horizontalWholeOuterCounter += diffX;
@@ -380,7 +392,7 @@ export default class ImageViewer extends React.Component<Props, State> {
             // 如果图片高度大于盒子高度， 可以纵向弹性拖拽
             if (this.props.imageHeight * this.scale > this.props.cropHeight) {
               this.positionY += diffY / this.scale;
-              this.animatedPositionY.setValue(this.positionY);
+              // this.animatedPositionY.setValue(this.positionY);
 
               // 如果图片上边缘脱离屏幕上边缘，则进入 swipeDown 动作
               // if (
