@@ -37,6 +37,7 @@ export default class ImageViewer extends React.Component<Props, State> {
 
   // 上次手按下去的时间
   private lastTouchStartTime: number = 0;
+  private lastClickTimeEnter: number = 0;
 
   // 滑动过程中，整体横向过界偏移量
   private horizontalWholeOuterCounter = 0;
@@ -140,12 +141,15 @@ export default class ImageViewer extends React.Component<Props, State> {
     this.imagePanResponder = PanResponder.create({
       // 要求成为响应者：
       onStartShouldSetPanResponder:  (evt) => {
-        let curTime = new Date().getTime() 
-        if ((curTime - this.lastClickTimeEnter) < (this.props.doubleClickInterval || 0)){
+        let curTime = new Date().getTime();
+        const minRespondInterval = 50;
+        const difference = (curTime - this.lastClickTimeEnter);
+        if (difference > minRespondInterval && difference < (this.props.doubleClickInterval || 0)){
             this.onDoubleClick(evt)
+            return this.animatedScale._value !== 1 ? true :  evt.nativeEvent.changedTouches.length > 1 ? true : false; 
         }        
         this.lastClickTimeEnter = new Date().getTime();
-        return  this.animatedScale._value !== 1 ? true :  evt.nativeEvent.changedTouches.length > 1 ? true : false; 
+        return true
     },
       onPanResponderTerminationRequest: () => false,
 
@@ -735,7 +739,6 @@ export default class ImageViewer extends React.Component<Props, State> {
     };
 
     const parentStyles = StyleSheet.flatten(this.props.style);
-
     return (
       <View
         style={{
