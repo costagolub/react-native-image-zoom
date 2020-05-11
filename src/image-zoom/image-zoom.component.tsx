@@ -149,7 +149,6 @@ export default class ImageViewer extends React.Component<Props, State> {
             return this.animatedScale._value !== 1 ? true :  evt.nativeEvent.changedTouches.length > 1 ? true : false; 
         }        
         this.lastClickTimeEnter = new Date().getTime();
-
         if (evt.nativeEvent.touches.length === 1 && this.animatedScale._value === 1) {
           return false;
         } else if (evt.nativeEvent.touches.length === 2 && this.animatedScale._value === 1) {
